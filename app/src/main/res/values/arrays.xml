@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- These are the options displayed in the category drop-down Spinner -->
+    <string-array name="array_category_options">
+        <item>@string/category_not_categorized</item>
+        <item>@string/category_fiction</item>
+        <item>@string/category_children_books</item>
+        <item>@string/category_crime_thriller_mystery</item>
+        <item>@string/category_biography</item>
+        <item>@string/category_history</item>
+        <item>@string/category_science_fiction</item>
+        <item>@string/category_health_family_lifestyle</item>
+        <item>@string/category_food_drink</item>
+        <item>@string/category_school_books</item>
+    </string-array>
+
+</resources>
+
+<!-- Strings for category drop-down Spinner -->

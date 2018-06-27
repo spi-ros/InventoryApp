@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">Inventory App</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="edit_fragment_new_book">Add a Book</string>
+
+    <string name="edit_fragment_edit_book">Edit Book</string>
+
+    <!-- Strings for category drop-down Spinner -->
+    <string name="category_not_categorized">Un-Categorized</string>
+    <string name="category_fiction">Fiction</string>
+    <string name="category_children_books">Children\'s Books</string>
+    <string name="category_crime_thriller_mystery">Crime/Thriller/Mystery</string>
+    <string name="category_biography">Biography</string>
+    <string name="category_history">History</string>
+    <string name="category_science_fiction">Science Fiction</string>
+    <string name="category_health_family_lifestyle">Health/Family/Lifestyle</string>
+    <string name="category_food_drink">Food/Drink</string>
+    <string name="category_school_books">School Books</string>
+    <string name="title">Title</string>
+    <string name="isbn">ISBN</string>
+    <string name="quantity">Quantity</string>
+    <string name="category">Category</string>
+    <string name="suppliers_name">Supplier\'s Name</string>
+    <string name="name">Name</string>
+    <string name="suppliers_number">Supplier\'s Number</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="editor_insert_book_failed">Error with Saving Book</string>
+    <string name="editor_insert_book_successful">Book Saved</string>
+    <string name="editor_update_book_failed">Book Update Failed</string>
+    <string name="editor_update_book_successful">Book Updated Successfully</string>
+    <string name="inventory_app">Inventory App</string>
+    <string name="delete_dialog_msg">Are you sure you want to delete this book?</string>
+    <string name="delete_dialog_msg_all">Are you sure you want to delete all books?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="editor_delete_book_failed">Error with deleting book</string>
+    <string name="editor_delete_book_successful">Book Deleted</string>
+    <string name="empty_view_title_text">It seems like the shelves are empty..</string>
+    <string name="empty_view_subtitle_text">Start adding Books!</string>
+    <string name="action_delete_all_entries">Delete all Books</string>
+    <string name="delete_books_failed">Delete Books Failed</string>
+    <string name="delete_books_successful">Delete Books Successful</string>
+    <string name="price_currency">Price: £\u0020</string>
+    <string name="quantity_">Quantity:\u0020</string>
+    <string name="sale">Sale</string>
+    <string name="empty_title">Please fill in the title of the Book</string>
+    <string name="empty_price">Please fill in the price of the Book</string>
+    <string name="empty_isbn">Please fill in the ISBN of the Book</string>
+    <string name="empty_quantity">Please fill in the quantity of the Book</string>
+    <string name="empty_sup_name">Please fill in the Supplier\'s Name</string>
+    <string name="empty_sup_number">Please fill in the Supplier\'s phone</string>
+
+</resources>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding_8"
+    android:paddingLeft="@dimen/padding_16"
+    android:paddingRight="@dimen/padding_16"
+    android:paddingTop="@dimen/padding_8">
+
+    <TextView
+        android:id="@+id/book_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="#2B3D4D"
+        tools:text="Title" />
+
+    <TextView
+        android:id="@+id/book_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/book_title"
+        android:fontFamily="sans-serif"
+        android:paddingBottom="@dimen/padding_8"
+        android:paddingTop="@dimen/padding_8"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:textColor="#AEB6BD"
+        tools:text="Category" />
+
+    <TextView
+        android:id="@+id/book_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/book_category"
+        tools:text="Price" />
+
+    <ImageView
+        android:id="@+id/sale_button"
+        android:src="@drawable/sale_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/book_quantity"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/book_quantity"
+        android:alpha="0.6" />
+
+    <TextView
+        android:id="@+id/book_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/book_category"
+        android:layout_marginEnd="@dimen/margin_16"
+        tools:text="Quantity"
+        android:layout_marginRight="@dimen/margin_16"
+        android:layout_alignParentRight="true" />
+
+</RelativeLayout>
