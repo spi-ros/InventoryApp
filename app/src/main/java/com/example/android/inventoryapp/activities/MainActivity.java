@@ -1,28 +1,40 @@
 package com.example.android.inventoryapp.activities;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.app.LoaderManager;
+import android.support.v7.widget.CardView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.inventoryapp.BookCursorAdapter;
 import com.example.android.inventoryapp.R;
 
 import com.example.android.inventoryapp.data.BookContract.BookEntry;
+import com.example.android.inventoryapp.data.BookDbHelper;
+
+import java.text.NumberFormat;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -34,13 +46,31 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     ListView bookListView;
 
+    TextView bookTitleDetails, titleDetails, bookPriceDetails, priceDetails,
+            bookIsbnDetails, isbnDetails, bookQuantityDetails, quantityDetails,
+            bookCategoryDetails, categoryDetails, bookSupNameDetails, supNameDetails,
+            bookSupNumberDetails, supNumberDetails;
+
+    Button plusButtonDetails, minusButtonDetails,
+            editButtonDetails, doneButtonDetails, deleteButtonDetails;
+
+    FloatingActionButton fab;
+
+    RelativeLayout backgroundLayout;
+
+    CardView hiddenCardView;
+
+    // Content URI for the existing book (null if its a new book).
+    private Uri currentBookUri;
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // Setup FAB to open EditorActivity
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,6 +81,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Find the ListView object in the view hierarchy of the Activity.
         bookListView = findViewById(R.id.list_view);
+
+        // Find the CardView object in the view hierarchy of the Activity.
+        hiddenCardView = findViewById(R.id.hidden_card_view);
+
+        // Find The Views in the hierarchy of the activity_main.xml
+        titleDetails = findViewById(R.id.title_details);
+        priceDetails = findViewById(R.id.price_details);
+        isbnDetails = findViewById(R.id.isbn_details);
+        quantityDetails = findViewById(R.id.quantity_details);
+        categoryDetails = findViewById(R.id.category_details);
+        supNameDetails = findViewById(R.id.supName_details);
+        supNumberDetails = findViewById(R.id.supNumber_details);
+        backgroundLayout = findViewById(R.id.background_relative);
+        plusButtonDetails = findViewById(R.id.plus_button);
+        minusButtonDetails = findViewById(R.id.minus_button);
+        editButtonDetails = findViewById(R.id.edit_button_details);
+        doneButtonDetails = findViewById(R.id.done_button_details);
+        deleteButtonDetails = findViewById(R.id.delete_button_details);
 
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         emptyView = findViewById(R.id.empty_view);
@@ -65,28 +113,170 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Setup the item click listener.
         bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                // Create new intent to go to {@link EditFragment}
-                Intent intent = new Intent(MainActivity.this, EditActivity.class);
+            public void onItemClick(final AdapterView<?> parent, View view, int position, final long id) {
 
                 // Form the content URI that represents the specific book that was clicked on,
                 // by appending the"id" (passed as input to this method) onto the
                 // {@link BookEntry#CONTENT_URI}.
                 // FOr example, the URI would be "content://"com.example.android.inventoryapp/books/2"
                 // If the set with ID 2 was clicked on.
-                Uri currentBookUri = ContentUris.withAppendedId(BookEntry.CONTENT_URI, id);
+                currentBookUri = ContentUris.withAppendedId(BookEntry.CONTENT_URI, id);
 
-                // Send the URI on the data field of the intent.
-                intent.setData(currentBookUri);
+                hideListView();
 
-                // Launch the{@link EditFragment} to display the data for the current book.
-                startActivity(intent);
+                // Find the columns of book attributes that we're interested in
+                int titleColumnIndex = bookCursorAdapter.getCursor().getColumnIndex(BookEntry.COLUMN_BOOK_TITLE);
+                int priceColumnIndex = bookCursorAdapter.getCursor().getColumnIndex(BookEntry.COLUMN_BOOK_PRICE);
+                int isbnColumnIndex = bookCursorAdapter.getCursor().getColumnIndex(BookEntry.COLUMN_BOOK_ISBN);
+                final int quantityColumnIndex = bookCursorAdapter.getCursor().getColumnIndex(BookEntry.COLUMN_BOOK_QUANTITY);
+                int categoryColumnIndex = bookCursorAdapter.getCursor().getColumnIndex(BookEntry.COLUMN_BOOK_CATEGORY);
+                int supNameColumnIndex = bookCursorAdapter.getCursor().getColumnIndex(BookEntry.COLUMN_BOOK_SUPPLIER_NAME);
+                int supNumberColumnIndex = bookCursorAdapter.getCursor().getColumnIndex(BookEntry.COLUMN_BOOK_SUPPLIER_NUMBER);
+                int rowIndex = bookCursorAdapter.getCursor().getColumnIndex(BookEntry._ID);
+
+                // Read the book attributes from the Cursor for the current book
+                String title = bookCursorAdapter.getCursor().getString(titleColumnIndex);
+                double price = bookCursorAdapter.getCursor().getDouble(priceColumnIndex);
+                String isbn = bookCursorAdapter.getCursor().getString(isbnColumnIndex);
+                final String quantity = bookCursorAdapter.getCursor().getString(quantityColumnIndex);
+                String category = bookCursorAdapter.getCursor().getString(categoryColumnIndex);
+                final String rowId = bookCursorAdapter.getCursor().getString(rowIndex);
+                String supName = bookCursorAdapter.getCursor().getString(supNameColumnIndex);
+                String supNumber = bookCursorAdapter.getCursor().getString(supNumberColumnIndex);
+
+                // Format the price number to have two digits to the right of the decimal point
+                // so for example it will show '8.10' instead of '8'.
+                NumberFormat numberFormat = NumberFormat.getInstance();
+                numberFormat.setMinimumFractionDigits(2);
+                String priceFormatted = numberFormat.format(price);
+                String currency = getString(R.string.price_currency) + priceFormatted;
+
+                titleDetails.setText(title);
+                priceDetails.setText(currency);
+                isbnDetails.setText(isbn);
+                quantityDetails.setText(quantity);
+                categoryDetails.setText(category);
+                supNameDetails.setText(supName);
+                supNumberDetails.setText(supNumber);
+
+                BookDbHelper dbHelper = new BookDbHelper(getApplicationContext());
+                final SQLiteDatabase database = dbHelper.getWritableDatabase();
+                final ContentValues values = new ContentValues();
+
+                plusButtonDetails.setOnClickListener(new View.OnClickListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onClick(View v) {
+
+                        int quantityUpdate = Integer.parseInt(quantityDetails.getText().toString());
+
+                        quantityUpdate = quantityUpdate + 1;
+
+                        values.put(BookEntry.COLUMN_BOOK_QUANTITY, quantityUpdate);
+                        String selection = BookEntry._ID + "=?";
+                        String[] selectionArgs = new String[]{String.valueOf(rowId)};
+                        int rowsAffected = database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
+                        quantityDetails.setText(Integer.toString(quantityUpdate));
+                    }
+                });
+
+                minusButtonDetails.setOnClickListener(new View.OnClickListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onClick(View v) {
+
+                        int quantityUpdate = Integer.parseInt(quantityDetails.getText().toString());
+
+                        quantityUpdate = quantityUpdate - 1;
+
+                        values.put(BookEntry.COLUMN_BOOK_QUANTITY, quantityUpdate);
+
+                        String selection = BookEntry._ID + "=?";
+                        String[] selectionArgs = new String[]{String.valueOf(rowId)};
+                        if (quantityUpdate == -1) {
+                            Toast.makeText(MainActivity.this, "No Stock Left ", Toast.LENGTH_SHORT).show();
+                        } else {
+                            int rowsAffected = database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
+                            quantityDetails.setText(Integer.toString(quantityUpdate));
+                        }
+                    }
+                });
+
+                editButtonDetails.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showListView();
+                        intent();
+                    }
+                });
+
+                doneButtonDetails.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showListView();
+                        getLoaderManager().restartLoader(BOOK_LOADER, null, MainActivity.this);
+                    }
+                });
+
+                deleteButtonDetails.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showDeleteConfirmationDialog();
+                        showListView();
+                    }
+                });
             }
         });
+
         // Kick off the loader
         getLoaderManager().initLoader(BOOK_LOADER, null, this);
+    }
+
+    private void showListView() {
+        hiddenCardView.setVisibility(View.GONE);
+        backgroundLayout.setVisibility(View.GONE);
+        fab.setVisibility(View.VISIBLE);
+        setTitle(R.string.inventory_app);
+    }
+
+    private void hideListView() {
+        hiddenCardView.setVisibility(View.VISIBLE);
+        hiddenCardView.setClickable(true);
+        backgroundLayout.setVisibility(View.VISIBLE);
+        backgroundLayout.setClickable(true);
+        fab.setVisibility(View.GONE);
+        setTitle(getString(R.string.book_details));
+    }
+
+    private void intent() {
+        // Create new intent to go to {@link EditActivity}
+        Intent intent = new Intent(MainActivity.this, EditActivity.class);
+
+        // Send the URI on the data field of the intent.
+        intent.setData(currentBookUri);
+
+        // Launch the{@link EditActivity} to display the data for the current book.
+        startActivity(intent);
+    }
+
+    private void deleteBook() {
+
+        if (currentBookUri != null) {
+            int rowsDeleted = getContentResolver().delete(currentBookUri, null, null);
+            if (rowsDeleted == 0) {
+                // If no rows were deleted, then there was an error with the delete.
+                Toast.makeText(MainActivity.this, getString(R.string.editor_delete_book_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the delete was successful and we can display a toast.
+                Toast.makeText(MainActivity.this, getString(R.string.editor_delete_book_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(MainActivity.this, "Klein", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void deleteAllBooks() {
@@ -112,8 +302,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Respond to a click on the "Delete all Books" menu option
-        showDeleteConfirmationDialog();
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the positive and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg_all);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                deleteAllBooks();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
         return super.onOptionsItemSelected(item);
     }
 
@@ -121,11 +329,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Create an AlertDialog.Builder and set the message, and click listeners
         // for the positive and negative buttons on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.delete_dialog_msg_all);
+        builder.setMessage(R.string.delete_dialog_msg_book);
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete all books.
-                deleteAllBooks();
+                deleteBook();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -147,9 +354,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         String[] projection = {
                 BookEntry._ID,
                 BookEntry.COLUMN_BOOK_TITLE,
-                BookEntry.COLUMN_BOOK_CATEGORY,
                 BookEntry.COLUMN_BOOK_PRICE,
-                BookEntry.COLUMN_BOOK_QUANTITY
+                BookEntry.COLUMN_BOOK_ISBN,
+                BookEntry.COLUMN_BOOK_QUANTITY,
+                BookEntry.COLUMN_BOOK_CATEGORY,
+                BookEntry.COLUMN_BOOK_SUPPLIER_NAME,
+                BookEntry.COLUMN_BOOK_SUPPLIER_NUMBER
         };
         return new CursorLoader(this,
                 BookEntry.CONTENT_URI,

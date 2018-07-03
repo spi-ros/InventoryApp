@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 
-public class BookCursorAdapter extends CursorAdapter implements LoaderManager.LoaderCallbacks<Cursor> {
+public class BookCursorAdapter extends CursorAdapter{
 
     public static final String LOG_TAG = BookCursorAdapter.class.getSimpleName();
     /**
@@ -74,7 +75,6 @@ public class BookCursorAdapter extends CursorAdapter implements LoaderManager.Lo
         TextView priceTextView = view.findViewById(R.id.book_price);
         final TextView quantityTextView = view.findViewById(R.id.book_quantity);
         ImageView imageView = view.findViewById(R.id.sale_button);
-
 
         // Find the columns of book attributes that we're interested in
         int titleColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_TITLE);
@@ -126,20 +126,5 @@ public class BookCursorAdapter extends CursorAdapter implements LoaderManager.Lo
         categoryTextView.setText(category);
         priceTextView.setText(currency);
         quantityTextView.setText(quantity);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }

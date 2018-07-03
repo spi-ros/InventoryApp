@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linear"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity"
-    android:id="@+id/linear">
+    tools:context=".activities.MainActivity">
 
     <ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:divider="@null"
+        android:dividerHeight="@dimen/divider_height_0" />
 
     <!-- Empty view for the list -->
     <RelativeLayout
@@ -23,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/bookshelves"/>
+            android:src="@drawable/bookshelves" />
 
         <TextView
             android:id="@+id/empty_title_text"
@@ -34,7 +37,7 @@
             android:fontFamily="sans-serif-medium"
             android:paddingTop="16dp"
             android:text="@string/empty_view_title_text"
-            android:textAppearance="?android:textAppearanceMedium"/>
+            android:textAppearance="?android:textAppearanceMedium" />
 
         <TextView
             android:id="@+id/empty_subtitle_text"
@@ -46,7 +49,7 @@
             android:paddingTop="8dp"
             android:text="@string/empty_view_subtitle_text"
             android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="#A2AAB0"/>
+            android:textColor="#A2AAB0" />
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -54,8 +57,212 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
-        android:layout_alignParentEnd="true" />
+        android:layout_margin="16dp" />
+
+    <RelativeLayout
+        android:id="@+id/background_relative"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:background="@color/cardview_dark_background"
+        android:visibility="gone">
+
+    </RelativeLayout>
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/hidden_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/padding_8"
+        app:cardCornerRadius="@dimen/padding_4"
+        app:cardElevation="@dimen/elevation_6">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_8"
+            android:layout_marginRight="@dimen/margin_8"
+            android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    tools:text="Title"
+                    android:textAppearance="?android:textAppearanceLarge"
+                    android:textColor="#000000"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/book_price_details"
+                    style="@style/cardView_labels"
+                    android:text="@string/book_price" />
+
+                <TextView
+                    android:id="@+id/price_details"
+                    style="@style/cardView_values"
+                    tools:text="Price" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_8"
+                android:layout_marginTop="@dimen/margin_8"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/book_isbn_details"
+                    style="@style/cardView_labels"
+                    android:text="@string/book_isbn" />
+
+                <TextView
+                    android:id="@+id/isbn_details"
+                    style="@style/cardView_values"
+                    tools:text="ISBN" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/book_quantity_details"
+                    style="@style/cardView_labels"
+                    android:text="@string/book_quantity" />
+
+                <Button
+                    android:id="@+id/minus_button"
+                    android:layout_width="40dp"
+                    android:layout_height="35dp"
+                    android:text="@string/minus_symbol" />
+
+                <TextView
+                    android:id="@+id/quantity_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/padding_4"
+                    android:paddingRight="@dimen/padding_4"
+                    android:textSize="18sp"
+                    tools:text="Quantity" />
+
+                <Button
+                    android:id="@+id/plus_button"
+                    android:layout_width="40dp"
+                    android:layout_height="35dp"
+                    android:text="@string/plus_symbol" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_8"
+                android:layout_marginTop="@dimen/margin_8"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/book_category_details"
+                    style="@style/cardView_labels"
+                    android:text="@string/book_category" />
+
+                <TextView
+                    android:id="@+id/category_details"
+                    style="@style/cardView_values"
+                    tools:text="Category" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Supplier"
+                android:gravity="center"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="#263238"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/book_supName_details"
+                    style="@style/cardView_labels"
+                    android:text="@string/name" />
+
+                <TextView
+                    android:id="@+id/supName_details"
+                    style="@style/cardView_values"
+                    tools:text="@string/name" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_8"
+                android:layout_marginTop="@dimen/margin_8"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/book_supNumber_details"
+                    style="@style/cardView_labels"
+                    android:text="@string/number" />
+
+                <TextView
+                    android:id="@+id/supNumber_details"
+                    style="@style/cardView_values"
+                    tools:text="@string/number" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/edit_button_details"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="Edit" />
+
+                <Button
+                    android:id="@+id/delete_button_details"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="Delete" />
+
+                <Button
+                    android:id="@+id/done_button_details"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="Done" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>
