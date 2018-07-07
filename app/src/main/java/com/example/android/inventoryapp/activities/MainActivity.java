@@ -17,7 +17,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.app.LoaderManager;
-import android.support.v7.widget.CardView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,19 +46,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     ListView bookListView;
 
-    TextView bookTitleDetails, titleDetails, bookPriceDetails, priceDetails,
-            bookIsbnDetails, isbnDetails, bookQuantityDetails, quantityDetails,
-            bookCategoryDetails, categoryDetails, bookSupNameDetails, supNameDetails,
-            bookSupNumberDetails, supNumberDetails;
+    TextView titleDetails, priceDetails,
+            isbnDetails, quantityDetails,
+            categoryDetails, supNameDetails,
+            supNumberDetails;
 
-    Button plusButtonDetails, minusButtonDetails,
+    Button plusButtonDetails, minusButtonDetails, orderButtonDetails,
             editButtonDetails, doneButtonDetails, deleteButtonDetails;
 
     FloatingActionButton fab;
 
     RelativeLayout backgroundLayout;
 
-    CardView hiddenCardView;
+    ScrollView hiddenScrollView;
 
     // Content URI for the existing book (null if its a new book).
     private Uri currentBookUri;
@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Find the ListView object in the view hierarchy of the Activity.
         bookListView = findViewById(R.id.list_view);
 
-        // Find the CardView object in the view hierarchy of the Activity.
-        hiddenCardView = findViewById(R.id.hidden_card_view);
+        // Find the ScrollView object in the view hierarchy of the Activity.
+        hiddenScrollView = findViewById(R.id.hidden_scroll_view);
 
         // Find The Views in the hierarchy of the activity_main.xml
         titleDetails = findViewById(R.id.title_details);
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         backgroundLayout = findViewById(R.id.background_relative);
         plusButtonDetails = findViewById(R.id.plus_button);
         minusButtonDetails = findViewById(R.id.minus_button);
+        orderButtonDetails = findViewById(R.id.order_button);
         editButtonDetails = findViewById(R.id.edit_button_details);
         doneButtonDetails = findViewById(R.id.done_button_details);
         deleteButtonDetails = findViewById(R.id.delete_button_details);
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 String category = bookCursorAdapter.getCursor().getString(categoryColumnIndex);
                 final String rowId = bookCursorAdapter.getCursor().getString(rowIndex);
                 String supName = bookCursorAdapter.getCursor().getString(supNameColumnIndex);
-                String supNumber = bookCursorAdapter.getCursor().getString(supNumberColumnIndex);
+                final String supNumber = bookCursorAdapter.getCursor().getString(supNumberColumnIndex);
 
                 // Format the price number to have two digits to the right of the decimal point
                 // so for example it will show '8.10' instead of '8'.
@@ -204,11 +205,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     }
                 });
 
+                orderButtonDetails.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", supNumber, null));
+                        startActivity(phoneIntent);
+                    }
+                });
+
                 editButtonDetails.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         showListView();
-                        intent();
+                        intentEdit();
                     }
                 });
 
@@ -235,26 +244,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void showListView() {
-        hiddenCardView.setVisibility(View.GONE);
+        hiddenScrollView.setVisibility(View.GONE);
         backgroundLayout.setVisibility(View.GONE);
         fab.setVisibility(View.VISIBLE);
         setTitle(R.string.inventory_app);
     }
 
     private void hideListView() {
-        hiddenCardView.setVisibility(View.VISIBLE);
-        hiddenCardView.setClickable(true);
+        hiddenScrollView.setVisibility(View.VISIBLE);
+        hiddenScrollView.setClickable(true);
         backgroundLayout.setVisibility(View.VISIBLE);
         backgroundLayout.setClickable(true);
         fab.setVisibility(View.GONE);
         setTitle(getString(R.string.book_details));
     }
 
-    private void intent() {
-        // Create new intent to go to {@link EditActivity}
+    private void intentEdit() {
+        // Create new intentEdit to go to {@link EditActivity}
         Intent intent = new Intent(MainActivity.this, EditActivity.class);
 
-        // Send the URI on the data field of the intent.
+        // Send the URI on the data field of the intentEdit.
         intent.setData(currentBookUri);
 
         // Launch the{@link EditActivity} to display the data for the current book.

@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.inventoryapp.activities.MainActivity;
 import com.example.android.inventoryapp.data.BookContract.BookEntry;
 import com.example.android.inventoryapp.data.BookDbHelper;
 
@@ -30,7 +31,11 @@ import java.util.Locale;
 import java.util.Objects;
 
 
-public class BookCursorAdapter extends CursorAdapter{
+public class BookCursorAdapter extends CursorAdapter
+{
+
+    LoaderManager loaderManager;
+    private static final int BOOK_LOADER = 0;
 
     public static final String LOG_TAG = BookCursorAdapter.class.getSimpleName();
     /**
@@ -111,6 +116,7 @@ public class BookCursorAdapter extends CursorAdapter{
                     int rowsAffected = database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
                     quantityTextView.setText(Integer.toString(quantity));
                 }
+
             }
         });
 
