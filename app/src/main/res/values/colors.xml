@@ -6,4 +6,7 @@
     <color name="emptySubtitleColor">#A2AAB0</color>
     <color name="colorBlack">#000000</color>
     <color name="colorGrey">#263238</color>
+    <color name="empty_subtitle_color">#A2AAB0</color>
+    <color name="list_item_title_color">#2B3D4D</color>
+    <color name="list_item_category_color">#AEB6BD</color>
 </resources>

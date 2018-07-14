@@ -1,18 +1,11 @@
 package com.example.android.inventoryapp;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.LoaderManager;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,23 +14,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.inventoryapp.activities.MainActivity;
 import com.example.android.inventoryapp.data.BookContract.BookEntry;
 import com.example.android.inventoryapp.data.BookDbHelper;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Locale;
-import java.util.Objects;
 
 
-public class BookCursorAdapter extends CursorAdapter
-{
+public class BookCursorAdapter extends CursorAdapter {
 
-    LoaderManager loaderManager;
-    private static final int BOOK_LOADER = 0;
 
-    public static final String LOG_TAG = BookCursorAdapter.class.getSimpleName();
+    private static final String LOG_TAG = BookCursorAdapter.class.getSimpleName();
+
     /**
      * Constructs a new {@link BookCursorAdapter}.
      *
@@ -75,6 +62,8 @@ public class BookCursorAdapter extends CursorAdapter
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
 
+        Log.i(LOG_TAG, "bindView");
+
         TextView titleTextView = view.findViewById(R.id.book_title);
         TextView categoryTextView = view.findViewById(R.id.book_category);
         TextView priceTextView = view.findViewById(R.id.book_price);
@@ -109,17 +98,15 @@ public class BookCursorAdapter extends CursorAdapter
                 ContentValues values = new ContentValues();
                 values.put(BookEntry.COLUMN_BOOK_QUANTITY, quantity);
                 String selection = BookEntry._ID + "=?";
-                String[] selectionArgs = new String[] {String.valueOf(rowId)};
+                String[] selectionArgs = new String[]{String.valueOf(rowId)};
                 if (quantity == -1) {
                     Toast.makeText(context, "No Stock Left ", Toast.LENGTH_SHORT).show();
                 } else {
                     int rowsAffected = database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
                     quantityTextView.setText(Integer.toString(quantity));
                 }
-
             }
         });
-
         // Format the price number to have two digits to the right of the decimal point
         // so for example it will show '8.10' instead of '8'.
         NumberFormat numberFormat = NumberFormat.getInstance();

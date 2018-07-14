@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,9 +35,9 @@ import java.util.Objects;
 
 public class EditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String LOG_TAG = EditActivity.class.getSimpleName();
     // Identifier for the book data loader.
     private static final int EXISTING_BOOK_LOADER = 0;
+
     // EditText fields to enter the book's details.
     private EditText titleEditText, priceEditText, isbnEditText, quantityEditText,
             supplierNameEditText, supplierNumberEditText;
@@ -71,20 +72,27 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_edit);
 
         Button deleteButton = findViewById(R.id.delete_button);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Pop up confirmation dialog for deletion
+                showDeleteConfirmationDialog();
+            }
+        });
 
         // Examine the intent that was used to launch this activity,
-        // in order to figure out if we're creating a new pet or editing an existing one.
+        // in order to figure out if we're creating a new book or editing an existing one.
         Intent intent = getIntent();
         currentBookUri = intent.getData();
 
-        // If the intent DOES NOT contain a pet content URI, then we know that we are
+        // If the intent DOES NOT contain a book content URI, then we know that we are
         // creating a new book.
         if (currentBookUri == null) {
-            // This is a new pet, so change the app bar to say "Add a Book"
+            // This is a new book, so change the app bar to say "Add a Book"
             setTitle(getString(R.string.edit_activity_new_book));
             deleteButton.setVisibility(View.GONE);
         } else {
-            // Otherwise this is an existing pet, so change app bar to say "Edit Book"
+            // Otherwise this is an existing book, so change app bar to say "Edit Book"
             setTitle(getString(R.string.edit_fragment_edit_book));
 
             // Initialize a loader to read the book data from the database
@@ -111,14 +119,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         supplierNameEditText.setOnTouchListener(touchListener);
         supplierNumberEditText.setOnTouchListener(touchListener);
         categorySpinner.setOnTouchListener(touchListener);
-
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Pop up confirmation dialog for deletion
-                showDeleteConfirmationDialog();
-            }
-        });
 
         Button saveButton = findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -285,13 +285,14 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
                         Toast.LENGTH_SHORT).show();
             }
         }
+        intentMain();
     }
 
     // Perform the deletion of the book in the database.
     private void deleteBook() {
-        // Only perform the delete if this is an existing pet.
+        // Only perform the delete if this is an existing book.
         if (currentBookUri != null) {
-            // Call the ContentResolver to delete the pet at the given content URI.
+            // Call the ContentResolver to delete the book at the given content URI.
             // Pass in null for the selection and selection args because the currentBookUri
             // content URI already identifies the book that we want.
             int rowsDeleted = getContentResolver().delete(currentBookUri, null, null);
@@ -306,62 +307,54 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
                         Toast.LENGTH_SHORT).show();
             }
         }
-        finish();
+        intentMain();
     }
 
-    private void showDeleteConfirmationDialog() {
-        // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the positive and negative buttons on the dialog.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.delete_dialog_msg);
-        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete the pet.
-                deleteBook();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the pet.
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        // Create and show the AlertDialog
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+    // This method makes an intent that sends the user back to the Main Activity.
+    private void intentMain() {
+        Intent intent = new Intent(EditActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
-     // This method is called when the back button is pressed.
+    // This method is called when the back button is pressed.
     @Override
     public void onBackPressed() {
         // If the book hasn't changed, continue with handling back button press
         if (!bookHasChanged) {
-            super.onBackPressed();
-            return;
+            intentMain();
+        } else {
+
+            // Otherwise if there are unsaved changes, setup a dialog to warn the user.
+            // Create a click listener to handle the user confirming that changes should be discarded.
+            DialogInterface.OnClickListener discardButtonClickListener =
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // User clicked "Discard" button, close the current activity.
+                            intentMain();
+                        }
+                    };
+
+            // Show dialog that there are unsaved changes
+            showUnsavedChangesDialog(discardButtonClickListener);
         }
-
-        // Otherwise if there are unsaved changes, setup a dialog to warn the user.
-        // Create a click listener to handle the user confirming that changes should be discarded.
-        DialogInterface.OnClickListener discardButtonClickListener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // User clicked "Discard" button, close the current activity.
-                        finish();
-                    }
-                };
-
-        // Show dialog that there are unsaved changes
-        showUnsavedChangesDialog(discardButtonClickListener);
     }
 
-     // Show a dialog that warns the user there are unsaved changes that will be lost
-     // if they continue leaving the editor.
-     // discardButtonClickListener is the click listener for what to do when
-     // the user confirms they want to discard their changes
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // Show a dialog that warns the user there are unsaved changes that will be lost
+    // if they continue leaving the editor.
+    // discardButtonClickListener is the click listener for what to do when
+    // the user confirms they want to discard their changes
     private void showUnsavedChangesDialog(
             DialogInterface.OnClickListener discardButtonClickListener) {
         // Create an AlertDialog.Builder and set the message, and click listeners
@@ -372,6 +365,31 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Keep editing" button, so dismiss the dialog
+                // and continue editing the book.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the positive and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg_book);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the book.
+                deleteBook();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
                 // and continue editing the book.
                 if (dialog != null) {
                     dialog.dismiss();
@@ -415,7 +433,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         // Proceed with moving to the first row of the cursor and reading data from it
         // (This should be the only row in the cursor)
         if (data.moveToFirst()) {
-            // Find the columns of pet attributes that we're interested in
+            // Find the columns of book attributes that we're interested in
             int titleColumnIndex = data.getColumnIndex(BookEntry.COLUMN_BOOK_TITLE);
             int priceColumnIndex = data.getColumnIndex(BookEntry.COLUMN_BOOK_PRICE);
             int isbnColumnIndex = data.getColumnIndex(BookEntry.COLUMN_BOOK_ISBN);
@@ -487,23 +505,3 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         supplierNumberEditText.setText("");
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

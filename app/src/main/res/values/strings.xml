@@ -16,6 +16,7 @@
     <string name="category_health_family_lifestyle">Health/Family/Lifestyle</string>
     <string name="category_food_drink">Food/Drink</string>
     <string name="category_school_books">School Books</string>
+
     <string name="title">Title</string>
     <string name="edit">Edit</string>
     <string name="isbn">ISBN</string>
@@ -23,6 +24,24 @@
     <string name="category">Category</string>
     <string name="name">Name</string>
     <string name="number">Number</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="sale">Sale</string>
+    <string name="book_price">Price</string>
+    <string name="supplier">Supplier</string>
+    <string name="done">Done</string>
+    <string name="order">Order</string>
+    <string name="save">Save</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+    <string name="book_details">Book Details</string>
+
+    <string name="price_currency">Price: £\u0020</string>
+    <string name="quantity_">Quantity:\u0020</string>
+
+    <string name="minus_symbol">-</string>
+    <string name="plus_symbol">+</string>
+
     <string name="suppliers_name">Supplier\'s Name</string>
     <string name="suppliers_number">Supplier\'s Number</string>
     <string name="phone_number">Phone Number</string>
@@ -31,10 +50,7 @@
     <string name="editor_update_book_failed">Book Update Failed</string>
     <string name="editor_update_book_successful">Book Updated Successfully</string>
     <string name="inventory_app">Inventory App</string>
-    <string name="delete_dialog_msg">Are you sure you want to delete this book?</string>
     <string name="delete_dialog_msg_all">Are you sure you want to delete all books?</string>
-    <string name="delete">Delete</string>
-    <string name="cancel">Cancel</string>
     <string name="editor_delete_book_failed">Error with deleting book</string>
     <string name="editor_delete_book_successful">Book Deleted</string>
     <string name="empty_view_title_text">It seems like the shelves are empty..</string>
@@ -42,31 +58,15 @@
     <string name="action_delete_all_entries">Delete all Books</string>
     <string name="delete_books_failed">Delete Books Failed</string>
     <string name="delete_books_successful">Delete Books Successful</string>
-    <string name="price_currency">Price: £\u0020</string>
-    <string name="quantity_">Quantity:\u0020</string>
-    <string name="sale">Sale</string>
     <string name="empty_title">Please fill in the title of the Book</string>
     <string name="empty_price">Please fill in the price of the Book</string>
     <string name="empty_isbn">Please fill in the ISBN of the Book</string>
     <string name="empty_quantity">Please fill in the quantity of the Book</string>
     <string name="empty_sup_name">Please fill in the Supplier\'s Name</string>
     <string name="empty_sup_number">Please fill in the Supplier\'s phone</string>
-    <string name="book_category">Category</string>
-    <string name="book_quantity">Quantity</string>
-    <string name="book_isbn">ISBN</string>
-    <string name="book_price">Price</string>
-    <string name="book_title">Title</string>
-    <string name="book_details">Book Details</string>
     <string name="delete_dialog_msg_book">Are You Sure You Want to Delete this Book?</string>
     <string name="edit_nothing_changed">No changes happened for this product</string>
     <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
-    <string name="discard">Discard</string>
-    <string name="keep_editing">Keep Editing</string>
     <string name="fill_in_the_fields">Please fill in all the fields or press Back to see your Inventory</string>
-    <string name="minus_symbol">-</string>
-    <string name="plus_symbol">+</string>
-    <string name="supplier">Supplier</string>
-    <string name="done">Done</string>
-    <string name="order">Order</string>
 
 </resources>

@@ -1,73 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linear"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".activities.MainActivity">
-
-    <ListView
-        android:id="@+id/list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null"
-        android:dividerHeight="@dimen/divider_height_0" />
-
-    <!-- Empty view for the list -->
-    <RelativeLayout
-        android:id="@+id/empty_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
-
-        <ImageView
-            android:id="@+id/empty_shelter_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/bookshelves"
-            tools:ignore="ContentDescription" />
-
-        <TextView
-            android:id="@+id/empty_title_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/empty_shelter_image"
-            android:layout_centerHorizontal="true"
-            android:fontFamily="sans-serif-medium"
-            android:paddingTop="@dimen/padding_16"
-            android:text="@string/empty_view_title_text"
-            android:textAppearance="?android:textAppearanceMedium" />
-
-        <TextView
-            android:id="@+id/empty_subtitle_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/empty_title_text"
-            android:layout_centerHorizontal="true"
-            android:fontFamily="sans-serif"
-            android:paddingTop="@dimen/padding_8"
-            android:text="@string/empty_view_subtitle_text"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="@color/emptySubtitleColor" />
-    </RelativeLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="16dp" />
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/landscape_card_view"
+        android:id="@+id/hidden_card_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_margin="@dimen/margin_8"
-        android:visibility="gone"
         app:cardCornerRadius="@dimen/radius_4"
         app:cardElevation="@dimen/elevation_6">
 
@@ -84,7 +28,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textAppearance="?android:textAppearanceLarge"
-                android:textColor="@color/colorBlack"
                 tools:text="@string/title" />
 
             <LinearLayout
@@ -100,7 +43,7 @@
                 <TextView
                     android:id="@+id/price_details"
                     style="@style/cardView_values"
-                    tools:text="Price" />
+                    tools:text="@string/book_price" />
 
             </LinearLayout>
 
@@ -114,12 +57,12 @@
                 <TextView
                     android:id="@+id/book_isbn_details"
                     style="@style/cardView_labels"
-                    android:text="@string/book_isbn" />
+                    android:text="@string/isbn" />
 
                 <TextView
                     android:id="@+id/isbn_details"
                     style="@style/cardView_values"
-                    tools:text="@string/book_isbn" />
+                    tools:text="@string/isbn" />
 
             </LinearLayout>
 
@@ -131,29 +74,38 @@
                 <TextView
                     android:id="@+id/book_quantity_details"
                     style="@style/cardView_labels"
-                    android:text="@string/book_quantity" />
+                    android:text="@string/quantity" />
 
-                <Button
-                    android:id="@+id/minus_button"
-                    android:layout_width="@dimen/layout_40"
-                    android:layout_height="@dimen/layout_35"
-                    android:text="@string/minus_symbol" />
-
-                <TextView
-                    android:id="@+id/quantity_details"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:gravity="center"
-                    android:paddingLeft="@dimen/padding_4"
-                    android:paddingRight="@dimen/padding_4"
-                    android:textSize="@dimen/text_size_18"
-                    tools:text="@string/quantity" />
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/plus_button"
-                    android:layout_width="@dimen/layout_40"
-                    android:layout_height="@dimen/layout_35"
-                    android:text="@string/plus_symbol" />
+                    <Button
+                        android:id="@+id/minus_button"
+                        android:layout_width="@dimen/layout_50"
+                        android:layout_height="@dimen/layout_35"
+                        android:text="@string/minus_symbol" />
+
+                    <TextView
+                        android:id="@+id/quantity_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/padding_4"
+                        android:paddingRight="@dimen/padding_4"
+                        android:textSize="@dimen/text_size_18"
+                        tools:text="@string/quantity" />
+
+                    <Button
+                        android:id="@+id/plus_button"
+                        android:layout_width="@dimen/layout_50"
+                        android:layout_height="@dimen/layout_35"
+                        android:text="@string/plus_symbol" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -167,12 +119,12 @@
                 <TextView
                     android:id="@+id/book_category_details"
                     style="@style/cardView_labels"
-                    android:text="@string/book_category" />
+                    android:text="@string/category" />
 
                 <TextView
                     android:id="@+id/category_details"
                     style="@style/cardView_values"
-                    tools:text="Category" />
+                    tools:text="@string/category" />
 
             </LinearLayout>
 
@@ -238,7 +190,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:text="@string/edit" />
+                    android:text="@string/edit"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/delete_button_details"
@@ -246,7 +199,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:text="@string/delete" />
+                    android:text="@string/delete"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/done_button_details"
@@ -254,7 +208,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:text="@string/done" />
+                    android:text="@string/done"
+                    tools:ignore="ButtonStyle" />
 
             </LinearLayout>
 

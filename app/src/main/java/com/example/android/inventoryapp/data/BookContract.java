@@ -1,18 +1,10 @@
 package com.example.android.inventoryapp.data;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.example.android.inventoryapp.R;
-import com.example.android.inventoryapp.activities.EditActivity;
-
-import java.net.URI;
-
 public class BookContract {
-
-    private BookContract() {}
 
     /**
      * The "Content authority" is a name for the entire content provider, similar to the
@@ -21,13 +13,6 @@ public class BookContract {
      * device.
      */
     public static final String CONTENT_AUTHORITY = "com.example.android.inventoryapp";
-
-    /**
-     * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
-     * the content provider.
-     */
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
     /**
      * Possible path (appended to base content URI for possible URI's)
      * For instance, content://com.example.android.inventoryapp/books/ is a valid path for
@@ -35,6 +20,14 @@ public class BookContract {
      * as the ContentProvider hasn't been given any information on what to do with "whatever".
      */
     public static final String PATH_BOOKS = "books";
+    /**
+     * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
+     * the content provider.
+     */
+    static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
+    private BookContract() {
+    }
 
     /**
      * Inner class that defines constant values for the books database table.
@@ -68,7 +61,7 @@ public class BookContract {
         public static final String COLUMN_BOOK_CATEGORY = "category";
 
         // Supplier's Name of the book.
-        public static final  String COLUMN_BOOK_SUPPLIER_NAME = "supplierName";
+        public static final String COLUMN_BOOK_SUPPLIER_NAME = "supplierName";
 
         // Supplier's Phone number of the book.
         public static final String COLUMN_BOOK_SUPPLIER_NUMBER = "supplierNumber";
