@@ -69,7 +69,6 @@ public class BookProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
-        Log.i(LOG_TAG, "cursor query");
         // Get readable database
         SQLiteDatabase database = mDbHelper.getReadableDatabase();
 

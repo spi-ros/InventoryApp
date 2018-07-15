@@ -4,6 +4,10 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class BookContract {
 
     /**
@@ -85,6 +89,12 @@ public class BookContract {
         //The MIME type of the {@link #CONTENT_URI} for a single book.
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BOOKS;
+
+        public static String doubleToStringNoDecimal(double d) {
+            DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.UK);
+            formatter.applyPattern("#,###");
+            return formatter.format(d);
+        }
     }
 }
 

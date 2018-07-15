@@ -28,9 +28,9 @@
                 android:value=".activities.MainActivity" />
         </activity>
         <activity android:name=".activities.DetailsActivity"
-            android:label="Book Details"
-            android:parentActivityName=".activities.MainActivity"
+            android:label="@string/details_activity_label"
             android:noHistory="true"
+            android:parentActivityName=".activities.MainActivity"
             tools:targetApi="jelly_bean">
             <meta-data
             android:name="android.support.PARENT_ACTIVITY"

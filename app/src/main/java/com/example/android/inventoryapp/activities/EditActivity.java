@@ -13,11 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.app.LoaderManager;
 import android.content.Loader;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -424,6 +421,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
                 null);                  // Default sort order
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Bail early if the cursor is null or there is less than 1 row in the cursor

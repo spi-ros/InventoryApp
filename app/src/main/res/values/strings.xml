@@ -29,12 +29,12 @@
     <string name="sale">Sale</string>
     <string name="book_price">Price</string>
     <string name="supplier">Supplier</string>
+    <string name="supplier_underlined"><u>Supplier</u></string>
     <string name="done">Done</string>
     <string name="order">Order</string>
     <string name="save">Save</string>
     <string name="discard">Discard</string>
     <string name="keep_editing">Keep Editing</string>
-    <string name="book_details">Book Details</string>
 
     <string name="price_currency">Price: £\u0020</string>
     <string name="quantity_">Quantity:\u0020</string>
@@ -68,5 +68,8 @@
     <string name="edit_nothing_changed">No changes happened for this product</string>
     <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
     <string name="fill_in_the_fields">Please fill in all the fields or press Back to see your Inventory</string>
+    <string name="no_books_to_delete">There are no Books to Delete</string>
+    <string name="details_activity_label">Book Details</string>
+    <string name="sale_button">sale button</string>
 
 </resources>

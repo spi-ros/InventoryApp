@@ -13,6 +13,7 @@
     <dimen name="margin_4">4dp</dimen>
     <dimen name="margin_8">8dp</dimen>
     <dimen name="margin_16">16dp</dimen>
+    <dimen name="margin_32">32dp</dimen>
 
 
     <dimen name="zero_dp">0dp</dimen>

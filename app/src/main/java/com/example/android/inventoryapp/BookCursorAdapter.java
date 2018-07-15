@@ -19,9 +19,10 @@ import com.example.android.inventoryapp.data.BookDbHelper;
 
 import java.text.NumberFormat;
 
+import static com.example.android.inventoryapp.data.BookContract.BookEntry.doubleToStringNoDecimal;
+
 
 public class BookCursorAdapter extends CursorAdapter {
-
 
     private static final String LOG_TAG = BookCursorAdapter.class.getSimpleName();
 
@@ -81,7 +82,7 @@ public class BookCursorAdapter extends CursorAdapter {
         String bookTitle = cursor.getString(titleColumnIndex);
         String category = cursor.getString(categoryColumnIndex);
         double price = cursor.getDouble(priceColumnIndex);
-        final String quantity = cursor.getString(quantityColumnIndex);
+        final int[] quantity = {cursor.getInt(quantityColumnIndex)};
         final int rowId = cursor.getInt(rowIndex);
 
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -92,18 +93,17 @@ public class BookCursorAdapter extends CursorAdapter {
                 BookDbHelper dbHelper = new BookDbHelper(context);
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-                int quantity = Integer.parseInt(quantityTextView.getText().toString());
-                quantity = quantity - 1;
+                quantity[0] -= 1;
 
                 ContentValues values = new ContentValues();
-                values.put(BookEntry.COLUMN_BOOK_QUANTITY, quantity);
+                values.put(BookEntry.COLUMN_BOOK_QUANTITY, quantity[0]);
                 String selection = BookEntry._ID + "=?";
                 String[] selectionArgs = new String[]{String.valueOf(rowId)};
-                if (quantity == -1) {
+                if (quantity[0] == -1) {
                     Toast.makeText(context, "No Stock Left ", Toast.LENGTH_SHORT).show();
                 } else {
-                    int rowsAffected = database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
-                    quantityTextView.setText(Integer.toString(quantity));
+                    database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
+                    quantityTextView.setText(doubleToStringNoDecimal(quantity[0]));
                 }
             }
         });
@@ -118,6 +118,6 @@ public class BookCursorAdapter extends CursorAdapter {
         titleTextView.setText(bookTitle);
         categoryTextView.setText(category);
         priceTextView.setText(currency);
-        quantityTextView.setText(quantity);
+        quantityTextView.setText(doubleToStringNoDecimal(quantity[0]));
     }
 }

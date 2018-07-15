@@ -23,33 +23,26 @@ import com.example.android.inventoryapp.R;
 import com.example.android.inventoryapp.data.BookContract.BookEntry;
 import com.example.android.inventoryapp.data.BookDbHelper;
 
+import static com.example.android.inventoryapp.data.BookContract.BookEntry.doubleToStringNoDecimal;
+
 public class DetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // Identifier for the book data loader
     private static final int EXISTING_BOOK_LOADER = 0;
-
-    // Integer used to update the quantity when the user press the plus or minus button.
-    int quantityUpdate;
-
+    private int quantity;
     // Content URI for the existing book.
-    Uri currentBookUri;
+    private Uri currentBookUri;
 
     // The id for the selected book.
-    String rowId;
+    private String rowId;
 
     // String for the supplier's Phone Number.
-    String supNumber;
+    private String supNumber;
 
     // TextViews that show the details of the selected book.
-    TextView titleDetails, priceDetails, isbnDetails, quantityDetails,
+    private TextView titleDetails, priceDetails, isbnDetails, quantityDetails,
             categoryDetails, supNameDetails, supNumberDetails;
 
-
-    // Buttons to adjust the quantity(plus and minus buttons), order button(to ring the supplier),
-    // edit button(to edit the selected book), delete button(to delete the selected book) and done
-    // button(to return back to Main Activity)
-    Button plusButtonDetails, minusButtonDetails,orderButtonDetails,
-            editButtonDetails, doneButtonDetails, deleteButtonDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +65,12 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         categoryDetails = findViewById(R.id.category_details);
         supNameDetails = findViewById(R.id.supName_details);
         supNumberDetails = findViewById(R.id.supNumber_details);
-        plusButtonDetails = findViewById(R.id.plus_button);
-        minusButtonDetails = findViewById(R.id.minus_button);
-        orderButtonDetails = findViewById(R.id.order_button);
-        editButtonDetails = findViewById(R.id.edit_button_details);
-        doneButtonDetails = findViewById(R.id.done_button_details);
-        deleteButtonDetails = findViewById(R.id.delete_button_details);
+        Button plusButtonDetails = findViewById(R.id.plus_button);
+        Button minusButtonDetails = findViewById(R.id.minus_button);
+        Button orderButtonDetails = findViewById(R.id.order_button);
+        Button editButtonDetails = findViewById(R.id.edit_button_details);
+        Button doneButtonDetails = findViewById(R.id.done_button_details);
+        Button deleteButtonDetails = findViewById(R.id.delete_button_details);
 
         // Set up the click listener for the Plus Button.
         plusButtonDetails.setOnClickListener(new View.OnClickListener() {
@@ -85,24 +78,17 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             @Override
             public void onClick(View v) {
 
-                // Get the quantity from the quantityDetails TextView and store it in
-                // the quantityUpdate Integer.
-                quantityUpdate = Integer.parseInt(quantityDetails.getText().toString());
-
-                quantityUpdate += 1;
-
                 BookDbHelper dbHelper = new BookDbHelper(getApplicationContext());
                 final SQLiteDatabase database = dbHelper.getWritableDatabase();
-                final ContentValues values = new ContentValues();
 
-                values.put(BookEntry.COLUMN_BOOK_QUANTITY, quantityUpdate);
+                quantity += 1;
 
+                ContentValues values = new ContentValues();
+                values.put(BookEntry.COLUMN_BOOK_QUANTITY, quantity);
                 String selection = BookEntry._ID + "=?";
                 String[] selectionArgs = new String[]{String.valueOf(rowId)};
-                    int rowsAffected = database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
-
-                // Update the quantityDetails TextView.
-                quantityDetails.setText(Integer.toString(quantityUpdate));
+                database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
+                quantityDetails.setText(doubleToStringNoDecimal(quantity));
             }
         });
 
@@ -112,28 +98,22 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             @Override
             public void onClick(View v) {
 
-                // Get the quantity from the quantityDetails TextView and store it in
-                // the quantityUpdate Integer.
-                quantityUpdate = Integer.parseInt(quantityDetails.getText().toString());
-
-                quantityUpdate -= 1;
-
                 BookDbHelper dbHelper = new BookDbHelper(getApplicationContext());
                 final SQLiteDatabase database = dbHelper.getWritableDatabase();
-                final ContentValues values = new ContentValues();
 
-                values.put(BookEntry.COLUMN_BOOK_QUANTITY, quantityUpdate);
+                quantity -= 1;
+
+                ContentValues values = new ContentValues();
+                values.put(BookEntry.COLUMN_BOOK_QUANTITY, quantity);
 
                 String selection = BookEntry._ID + "=?";
                 String[] selectionArgs = new String[]{String.valueOf(rowId)};
-                if (quantityUpdate == -1) {
+                if (quantity == -1) {
                     Toast.makeText(DetailsActivity.this, "No Stock Left ", Toast.LENGTH_SHORT).show();
                 } else {
-                    int rowsAffected = database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
+                    database.update(BookEntry.TABLE_NAME, values, selection, selectionArgs);
                 }
-
-                // Update the quantityDetails TextView.
-                quantityDetails.setText(Integer.toString(quantityUpdate));
+                quantityDetails.setText(doubleToStringNoDecimal(quantity));
             }
         });
 
@@ -273,6 +253,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                 null);                  // Default sort order
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Bail early if the cursor is null or there is less than 1 row in the cursor
@@ -296,7 +277,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             String title = data.getString(titleColumnIndex);
             double price = data.getDouble(priceColumnIndex);
             long isbn = data.getLong(isbnColumnIndex);
-            int quantity = data.getInt(quantityColumnIndex);
+            quantity = data.getInt(quantityColumnIndex);
             String category = data.getString(categoryColumnIndex);
             String supName = data.getString(supNameColumnIndex);
             supNumber = data.getString(supNumberColumnIndex);
@@ -306,7 +287,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             titleDetails.setText(title);
             priceDetails.setText(Double.toString(price));
             isbnDetails.setText(Long.toString(isbn));
-            quantityDetails.setText(Integer.toString(quantity));
+            quantityDetails.setText(doubleToStringNoDecimal(quantity));
             categoryDetails.setText(category);
             supNameDetails.setText(supName);
             supNumberDetails.setText(supNumber);

@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
@@ -19,29 +21,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.inventoryapp.BookCursorAdapter;
 import com.example.android.inventoryapp.R;
 
 import com.example.android.inventoryapp.data.BookContract.BookEntry;
+import com.example.android.inventoryapp.data.BookDbHelper;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int BOOK_LOADER = 0;
 
-    BookCursorAdapter bookCursorAdapter;
-
-    View emptyView;
-
-    ListView bookListView;
-
-    FloatingActionButton fab;
+    private BookCursorAdapter bookCursorAdapter;
 
     // Content URI for the existing book (null if its a new book).
     private Uri currentBookUri;
@@ -52,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Setup FAB to open EditorActivity
-        fab = findViewById(R.id.fab);
+        // Setup FAB to open EditActivity
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,10 +56,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
 
         // Find the ListView object in the view hierarchy of the Activity.
-        bookListView = findViewById(R.id.list_view);
+        ListView bookListView = findViewById(R.id.list_view);
 
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
-        emptyView = findViewById(R.id.empty_view);
+        View emptyView = findViewById(R.id.empty_view);
         bookListView.setEmptyView(emptyView);
 
         // Create a BookCursorAdapter.
@@ -99,19 +92,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(intent);
             }
         });
-        // Kick off the loader
-        getLoaderManager().initLoader(BOOK_LOADER, null, this);
+        // Restart the loader
+        getLoaderManager().restartLoader(BOOK_LOADER, null, this);
     }
 
     private void deleteAllBooks() {
         int rowsDeleted = getContentResolver().delete(BookEntry.CONTENT_URI, null, null);
         if (rowsDeleted == 0) {
             // If no rows were deleted, then there was an error with the delete.
-            Toast.makeText(this, getString(R.string.delete_books_failed),
+            Toast.makeText(this, R.string.delete_books_failed,
                     Toast.LENGTH_SHORT).show();
         } else {
             // Otherwise, the delete was successful and we can display a toast.
-            Toast.makeText(this, getString(R.string.delete_books_successful),
+            Toast.makeText(this, R.string.delete_books_successful,
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -131,26 +124,36 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void showDeleteConfirmationDialog() {
-        // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the positive and negative buttons on the dialog.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.delete_dialog_msg_all);
-        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                deleteAllBooks();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Cancel" button, so dismiss the dialog.
-                if (dialog != null) {
-                    dialog.dismiss();
+        // Check whether the DataBase is empty
+        // If yes then show message "There are no books to delete"
+        BookDbHelper dbHelper = new BookDbHelper(getApplicationContext());
+        final SQLiteDatabase database = dbHelper.getReadableDatabase();
+        long numRows = DatabaseUtils.queryNumEntries(database, BookEntry.TABLE_NAME);
+        if (numRows == 0) {
+            Toast.makeText(this, R.string.no_books_to_delete,
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            // Create an AlertDialog.Builder and set the message, and click listeners
+            // for the positive and negative buttons on the dialog.
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.delete_dialog_msg_all);
+            builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    deleteAllBooks();
                 }
-            }
-        });
-        // Create and show the AlertDialog
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked the "Cancel" button, so dismiss the dialog.
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            // Create and show the AlertDialog
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
     }
 
     @Override
